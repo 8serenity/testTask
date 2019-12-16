@@ -1,0 +1,64 @@
+﻿<div>
+    <span>Группа</span>
+    <select ng-change="updateGroup()" ng-model="selectedGroup" ng-options="group.title for group in availableGroups">
+        <option value="">Все</option>
+    </select>
+    <input ng-click="openNewProductWindow()" type="button" value="Добавить" />
+    <input ng-click="openEditProductWindow()" type="button" value="Изменить" />
+    <input ng-click="openDeleteProductWindow()" type="button" value="Удалить" />
+</div>
+<div>
+    <div class="modal-demo">
+        <script type="text/ng-template" id="CreateEditProduct.html">
+            <div class="modal-header">
+                <h3 class="modal-title">{{message}}</h3>
+            </div>
+            <div class="modal-body">
+                <span>Группа</span>
+                <select ng-model="group" ng-options="group as group.title for group in availableGroups">
+                </select>
+                <span>Наименование</span>
+                <input type="text" ng-model="product.title" />
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+        <script type="text/ng-template" id="DeleteProduct.html">
+            <div class="modal-header">
+                <h3 class="modal-title">{{message}}</h3>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Наименование
+                </th>
+                <th>
+                    Группа
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-click="productSelected(product)" ng-class="{selectedProduct: product.id == selectedProduct.id}" ng-repeat="product in products | filter : {group: selectedGroup.title}">
+                <td>
+                    {{product.title}}
+                </td>
+                <td>
+                    {{product.group}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <input ng-click="loadMoreData()" type="button" value="Загрузить еще" />
+    <span>Всего записей в БД: {{totalProductsInDb}}</span>
+</div>
+
+

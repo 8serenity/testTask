@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="mainModule">
+<head>
+    <title></title>
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/angular-route.min.js"></script>
+    <script src="~/Scripts/angular-resource.min.js"></script>
+    <script src="~/Scripts/angular-sanitize.min.js"></script>
+    <script src="~/Scripts/angular-animate.min.js"></script>
+    <script src="~/Scripts/ui-bootstrap-tpls.min.js"></script>
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Styles.css" rel="stylesheet" />
+
+    <script src="~/Scripts/Script.js"></script>
+    <script src="~/Scripts/salesController.js"></script>
+    <base href="/" />
+</head>
+<body>
+    <table>
+        <tr>
+            <td colspan="2" class="header">
+                <h1>
+                    Товары
+                </h1>
+            </td>
+        </tr>
+        <tr>
+            <td class="leftMenu">
+                <a href="#!products">Товары</a>
+                <a href="#!addPlans">Ввод плана</a>
+                <a href="#!sales">Продажи</a>
+            </td>
+            <td class="mainContent">
+                <ng-view></ng-view>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

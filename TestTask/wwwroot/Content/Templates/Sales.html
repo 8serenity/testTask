@@ -1,0 +1,121 @@
+﻿<div>
+    <span>Клиент</span>
+    <select ng-change="goToPage(1)" ng-model="selectedClient" ng-options="client.title for client in availableClients">
+        <option value="">Все</option>
+    </select>
+    <input ng-click="openNewSaleWindow()" type="button" value="Добавить" />
+    <input ng-click="openEditSaleWindow()" type="button" value="Изменить" />
+    <input ng-click="openDeleteSaleWindow()" type="button" value="Удалить" />
+</div>
+<div>
+    <div class="modal-demo">
+        <script type="text/ng-template" id="CreateEditSale.html">
+            <div class="modal-header">
+                <h3 class="modal-title">{{message}}</h3>
+            </div>
+            <div class="modal-body">
+                <span>Клиент</span>
+                <select ng-model="clientId" ng-options="client.id as client.title for client in availableClients"></select>
+                <span>Дата</span>
+                <input type="date" ng-model="date" />
+                <br />
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Список товаров
+                            </th>
+                            <th>
+                                <input ng-click="addProduct()" type="button" value="Добавить" />
+                            </th>
+                            <th>
+                                <input ng-click="deleteProduct()" type="button" value="Удалить" />
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                Наименование
+                            </th>
+                            <th>
+                                Количество
+                            </th>
+                            <th>
+                                Цена
+                            </th>
+                            <th>
+                                Сумма
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-click="productSaleSelected(productInSale)" ng-class="{selected:productInSale.rowId == selectedProductInSale.rowId}" ng-repeat="productInSale in productsInSale">
+                            <td>
+                                <select ng-model="productInSale.id" ng-options="product.id as product.title for product in availableProducts"></select>
+                            </td>
+                            <td>
+                                <input type="number" min="0" ng-model="productInSale.count" />
+                            </td>
+                            <td>
+                                <input type="number" min="0" ng-model="productInSale.price" />
+                            </td>
+                            <td>
+                                {{productInSale.count * productInSale.price}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                Итого: {{totalSum()}}
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="ok()">Ok</button>
+                <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+        <script type="text/ng-template" id="DeleteSale.html">
+            <div class="modal-header">
+                <h3 class="modal-title">{{message}}</h3>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Дата
+                </th>
+                <th>
+                    Клиент
+                </th>
+                <th>
+                    Сумма
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-click="saleSelected(sale)" ng-class="{selected: sale.id == selectedSale.id}" ng-repeat="sale in sales | filter : {client: selectedClient.title}">
+                <td>
+                    {{sale.id}}
+                </td>
+                <td>
+                    {{sale.saleDate | date:'dd-MM-yyyy'}}
+                </td>
+                <td>
+                    {{sale.client}}
+                </td>
+                <td>
+                    {{sale.sum}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button ng-class="{selected: $index + 1 == currentPage}" ng-repeat="page in pages()" ng-click="goToPage($index + 1)">{{$index + 1}}</button>
+</div>
+
+

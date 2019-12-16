@@ -1,0 +1,29 @@
+﻿<div>
+    <span>Год</span>
+    <select ng-model="selectedYear" ng-options="year as year for year in yearPeriods">
+    </select>
+    <input ng-click="uploadPlans(); clearCells()" type="button" value="Сохранить" />
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+
+            </th>
+            <th ng-repeat="period in periods | filter : {planYear: selectedYear}">
+                {{period.title}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="groupCells in planCells">
+            <th colspan="1">
+                {{groupCells.group.title}}
+            </th>
+            <td ng-repeat="cell in groupCells.cells | filter : {planYear: selectedYear}">
+                <input type="number" min="0" ng-model="cell.amount" />
+            </td>
+        </tr>
+    </tbody>
+</table>
