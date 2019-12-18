@@ -19,6 +19,14 @@ namespace TestTask.Controllers {
         }
 
         [HttpGet]
+        public IActionResult GetPlans() {
+            return Ok(context.PlanSales
+                .Select(p => new { p.ProdGroupId, p.PeriodId, p.PlanAmount })
+                .ToList());
+        }
+
+
+        [HttpGet]
         public IActionResult GetPeriods() {
             return Ok(context.PlanPeriods
                 .Select(p => new { p.Id, p.Title, p.PlanYear })

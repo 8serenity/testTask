@@ -428,20 +428,26 @@ var app = angular.module('mainModule', ["ngRoute", "ui.bootstrap", "ngSanitize",
     .controller('addPlanController', function ($scope, $http) {
         $scope.planCells = [];
 
-        $http({ method: 'get', url: 'products/GetGroups' }).
+        $http({ method: 'get', url: 'plan/GetPlans' }).
             then(function (response) {
-                if (response.data) {
-                    $scope.groups = response.data;
-                    $http({ method: 'get', url: 'plan/GetPeriods' }).
-                        then(function (response) {
-                            if (response.data) {
-                                $scope.periods = response.data;
-                                $scope.initTableCells();
-                                $scope.initYearPeriods();
-                            }
-                        });
-                }
+                $scope.plansFromDb = response.data;
+                $http({ method: 'get', url: 'products/GetGroups' }).
+                    then(function (response) {
+                        if (response.data) {
+                            $scope.groups = response.data;
+                            $http({ method: 'get', url: 'plan/GetPeriods' }).
+                                then(function (response) {
+                                    if (response.data) {
+                                        $scope.periods = response.data;
+                                        $scope.initTableCells();
+                                        $scope.initYearPeriods();
+                                    }
+                                });
+                        }
+                    });
+
             });
+
 
         $scope.initTableCells = function () {
             for (var i = 0; i < $scope.groups.length; i++) {
@@ -449,10 +455,21 @@ var app = angular.module('mainModule', ["ngRoute", "ui.bootstrap", "ngSanitize",
                 $scope.planCells[i].group = $scope.groups[i];
                 $scope.planCells[i].cells = [];
                 for (var j = 0; j < $scope.periods.length; j++) {
-                    var cell = { amount: null, periodId: $scope.periods[j].id, planYear: $scope.periods[j].planYear };
+                    var cellAmountFromDb = $scope.getCellAmountFromDb($scope.groups[i].id, $scope.periods[j].id);
+                    amountToPutInCell = cellAmountFromDb ? cellAmountFromDb : null;
+                    var cell = { initialAmount: amountToPutInCell, amount: amountToPutInCell, periodId: $scope.periods[j].id, planYear: $scope.periods[j].planYear };
                     $scope.planCells[i].cells.push(cell);
                 }
             }
+        }
+
+        $scope.getCellAmountFromDb = function (groupId, periodId) {
+            for (var i = 0; i < $scope.plansFromDb.length; i++) {
+                if ($scope.plansFromDb[i].prodGroupId == groupId && $scope.plansFromDb[i].periodId == periodId) {
+                    return $scope.plansFromDb[i].planAmount;
+                }
+            }
+            return null;
         }
 
         $scope.initYearPeriods = function () {
@@ -473,11 +490,12 @@ var app = angular.module('mainModule', ["ngRoute", "ui.bootstrap", "ngSanitize",
 
         $scope.uploadPlans = function () {
             var postData = [];
-            //getting postData. only cells where amount is number and > 0
+            //getting postData. only cells where amount is number and > 0 and amount is changed
             for (var i = 0; i < $scope.planCells.length; i++) {
                 for (var j = 0; j < $scope.planCells[i].cells.length; j++) {
                     var amountInCell = $scope.planCells[i].cells[j].amount;
-                    if (amountInCell && !isNaN(amountInCell) && amountInCell > 0) {
+                    var isAmountInCellChanged = $scope.planCells[i].cells[j].amount != $scope.planCells[i].cells[j].initialAmount;
+                    if (amountInCell && !isNaN(amountInCell) && amountInCell > 0 && isAmountInCellChanged) {
                         var cell = { amount: amountInCell, groupId: $scope.planCells[i].group.id, periodId: $scope.periods[j].id };
                         postData.push(cell);
                     }
